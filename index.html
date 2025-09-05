@@ -53,6 +53,17 @@
         textarea {
             resize: vertical;
         }
+        .ai-button {
+             background-color: #3D352E;
+             color: #FDFBF8;
+        }
+        .ai-button:hover {
+            background-color: #2c2520;
+        }
+        .ai-button:disabled {
+            background-color: #9e968f;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -77,10 +88,16 @@
         </main>
 
         <section id="final-output-section" class="mt-12 p-6 md:p-8 rounded-lg content-card">
-             <h2 class="text-2xl font-bold mb-4">Agentin tuottama lopputulos</h2>
-             <p class="mb-6 text-gray-600">Kun käyttäjä on vastannut kaikkiin kysymyksiin, tekoälyagentti koostaa vastauksista alla olevan kaltaisen, selkeästi jäsennellyn liiketoimintasuunnitelman. Tämä esikatselu päivittyy aina, kun tallennat vastauksiasi.</p>
-             <div class="bg-gray-50 p-6 rounded-md border border-gray-200 text-sm font-mono text-gray-800 overflow-x-auto">
-                 <pre><code id="final-plan-code"></code></pre>
+             <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
+                <h2 class="text-2xl font-bold">Agentin tuottama lopputulos</h2>
+                <button id="ai-generate-button" class="ai-button font-bold py-2 px-6 rounded-lg hover:bg-[#c8935a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#D4A373] transition duration-200 flex items-center">
+                    <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M11.41 1.583A1 1 0 0010.5 1h-1a1 1 0 00-.91.583L7.175 5H4a1 1 0 00-1 1v10a1 1 0 001 1h12a1 1 0 001-1V6a1 1 0 00-1-1h-3.175l-1.415-3.417zM10 12a3 3 0 100-6 3 3 0 000 6z" /><path d="M12.5 4a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" /></svg>
+                    Luo liiketoimintasuunnitelma tekoälyllä
+                </button>
+             </div>
+             <p id="output-description" class="mb-6 text-gray-600">Kun olet vastannut kysymyksiin, klikkaa yllä olevaa painiketta lähettääksesi tiedot tekoälylle, joka muodostaa niistä kokonaisen liiketoimintasuunnitelman.</p>
+             <div class="bg-gray-50 p-6 rounded-md border border-gray-200 text-sm font-mono text-gray-800 overflow-x-auto min-h-[200px]">
+                 <pre><code id="final-plan-code">Täytä kentät ja paina "Luo liiketoimintasuunnitelma tekoälyllä" -painiketta.</code></pre>
              </div>
         </section>
 
@@ -175,27 +192,7 @@
         const mainContentAreaEl = document.getElementById('main-content-area');
         const saveAreaEl = document.getElementById('save-area');
         const finalPlanEl = document.getElementById('final-plan-code');
-
-        function updateFinalPlan() {
-            let finalText = "";
-            const companyName = userAnswers['aloitus'] ? (userAnswers['aloitus']['1'] || '[Yrityksen nimeä ei ole määritetty]') : '[Yrityksen nimeä ei ole määritetty]';
-            finalText += `## Yrityksen nimi: ${companyName}\n\n`;
-
-            agentData.forEach(section => {
-                finalText += `## ${section.title}\n`;
-                section.questions.forEach((question, index) => {
-                    if (question.key === 'Yrityksen nimi') return; // Handled at the top
-                    
-                    const answer = userAnswers[section.id] ? (userAnswers[section.id][index] || '[Ei vastausta]') : '[Ei vastausta]';
-                    finalText += `**${question.key}:** ${answer}\n`;
-                });
-                finalText += '\n';
-            });
-            
-            if (finalPlanEl) {
-                finalPlanEl.textContent = finalText.trim();
-            }
-        }
+        const generateButton = document.getElementById('ai-generate-button');
 
         function renderContent(sectionId) {
             const sectionData = agentData.find(item => item.id === sectionId);
@@ -245,6 +242,78 @@
                 }
             });
         }
+        
+        async function callAiAgent() {
+            // --- SETTINGS: REPLACE THESE WITH YOUR DETAILS ---
+            const API_KEY = 'AIzaSyCnNwNKNqr-Ga4PYiWn4AoW85udKM62vu0'; // <-- REPLACE WITH YOUR GEMINI API KEY
+            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+            // ----------------------------------------------------
+
+            generateButton.disabled = true;
+            generateButton.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Generoidaan...`;
+            finalPlanEl.textContent = 'Lähetetään tietoja tekoälylle... Odota hetki.';
+
+            let rawAnswersText = "";
+            agentData.forEach(section => {
+                rawAnswersText += `\n### ${section.title}\n`;
+                section.questions.forEach((question, index) => {
+                    const answer = userAnswers[section.id] ? (userAnswers[section.id][index] || 'Ei vastausta') : 'Ei vastausta';
+                    rawAnswersText += `- **${question.key}:** ${answer}\n`;
+                });
+            });
+
+            const systemPrompt = "You are an expert business consultant. Your task is to create a clear, professional, and well-structured business plan based on the user's provided answers. Formulate the answers into a coherent and flowing text, not just a list of the answers. Use Markdown for formatting, including headings, bold text, and lists where appropriate. The response must be in Finnish.";
+            
+            const userPrompt = `Create a comprehensive business plan from the following raw data:\n\n${rawAnswersText}`;
+
+            const payload = {
+                contents: [{ "parts": [{ "text": userPrompt }] }],
+                systemInstruction: {
+                    "parts": [{ "text": systemPrompt }]
+                },
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorBody = await response.text();
+                    throw new Error(`API error: ${response.status} ${response.statusText} - ${errorBody}`);
+                }
+
+                const result = await response.json();
+                
+                const generatedText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (generatedText) {
+                    finalPlanEl.textContent = generatedText;
+                } else {
+                     finalPlanEl.textContent = 'API returned an empty or incorrectly formatted response. Check the browser console for details.';
+                     console.log('Invalid API response:', result);
+                }
+
+            } catch (error) {
+                console.error('Error calling Gemini API:', error);
+                finalPlanEl.textContent = `An error occurred: ${error.message}\n\nCheck the console for more details and ensure the API key is correct.`;
+            } finally {
+                 generateButton.disabled = false;
+                 generateButton.innerHTML = `
+                    <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M11.41 1.583A1 1 0 0010.5 1h-1a1 1 0 00-.91.583L7.175 5H4a1 1 0 00-1 1v10a1 1 0 001 1h12a1 1 0 001-1V6a1 1 0 00-1-1h-3.175l-1.415-3.417zM10 12a3 3 0 100-6 3 3 0 000 6z" /><path d="M12.5 4a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" /></svg>
+                    Luo liiketoimintasuunnitelma tekoälyllä`;
+            }
+        }
+
 
         function init() {
             agentData.forEach(item => {
@@ -280,8 +349,6 @@
                     const sectionId = e.target.id.replace('save-button-', '');
                     const feedbackEl = document.getElementById(`save-feedback-${sectionId}`);
                     
-                    updateFinalPlan();
-
                     if (feedbackEl) {
                         feedbackEl.classList.remove('opacity-0');
                         setTimeout(() => {
@@ -290,9 +357,12 @@
                     }
                 }
             });
+            
+            if (generateButton) {
+                generateButton.addEventListener('click', callAiAgent);
+            }
 
             renderContent(agentData[0].id);
-            updateFinalPlan();
             
             const style = document.createElement('style');
             style.innerHTML = `
