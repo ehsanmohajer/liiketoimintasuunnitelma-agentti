@@ -76,31 +76,14 @@
 
         <section id="final-output-section" class="mt-12 p-6 md:p-8 rounded-lg content-card">
              <h2 class="text-2xl font-bold mb-4">Agentin tuottama lopputulos</h2>
-             <p class="mb-6 text-gray-600">Kun käyttäjä on vastannut kaikkiin kysymyksiin, tekoälyagentti koostaa vastauksista alla olevan kaltaisen, selkeästi jäsennellyn liiketoimintasuunnitelman. Tämä on esimerkki siitä, miltä valmis dokumentti voisi näyttää.</p>
+             <p class="mb-6 text-gray-600">Kun käyttäjä on vastannut kaikkiin kysymyksiin, tekoälyagentti koostaa vastauksista alla olevan kaltaisen, selkeästi jäsennellyn liiketoimintasuunnitelman. Tämä esikatselu päivittyy aina, kun tallennat vastauksiasi.</p>
              <div class="bg-gray-50 p-6 rounded-md border border-gray-200 text-sm font-mono text-gray-800 overflow-x-auto">
-                 <pre><code>## Yrityksen nimi: [Käyttäjän vastaus]
-
-## 1. Liikeidea
-**Tuote/palvelu:** [Käyttäjän kuvaus tuotteesta/palvelusta]
-**Ainutlaatuisuus:** [Käyttäjän vastaus siitä, mikä tekee siitä uniikin]
-**Kohderyhmä:** [Käyttäjän kuvaus kohderyhmästä]
-
-## 2. Markkina-analyysi
-**Kilpailijat:** [Käyttäjän listaamat kilpailijat]
-**Erottuvuustekijät:** [Käyttäjän vastaus siitä, miten yritys eroaa kilpailijoista]
-**Markkinan mahdollisuudet:** [Käyttäjän kuvaus trendeistä ja mahdollisuuksista]
-
-## 3. Liiketoimintamalli
-**Ansaintalogiikka:** [Käyttäjän vastaus ansaintamallista]
-**Resurssit ja kumppanit:** [Käyttäjän kuvaus resursseista]
-**Toimitusprosessi:** [Käyttäjän kuvaus toimitusketjusta]
-
-... ja niin edelleen kaikille osa-alueille.</code></pre>
+                 <pre><code id="final-plan-code"></code></pre>
              </div>
         </section>
 
         <footer class="text-center mt-12 py-6 border-t border-gray-200">
-            <p class="text-gray-500">Made By AI Agent Witas.</p>
+            <p class="text-gray-500">Made By Witas AI Agent.</p>
         </footer>
     </div>
 
@@ -112,8 +95,8 @@
                 heading: 'Tervetuloa & Aloitus',
                 description: 'Ensimmäisessä vaiheessa agentti toivottaa käyttäjän tervetulleeksi, selittää prosessin lyhyesti ja kerää perustiedot aloitettavasta liiketoiminnasta. Tämä luo pohjan koko suunnitelmalle.',
                 questions: [
-                    'Minkä tyyppistä liiketoimintaa suunnittelet aloittavasi?',
-                    'Mikä on yrityksesi nimi (jos sinulla on jo nimi mielessä)?'
+                    { key: 'Liiketoiminnan tyyppi', text: 'Minkä tyyppistä liiketoimintaa suunnittelet aloittavasi?' },
+                    { key: 'Yrityksen nimi', text: 'Mikä on yrityksesi nimi (jos sinulla on jo nimi mielessä)?' }
                 ]
             },
             {
@@ -122,9 +105,9 @@
                 heading: 'Liikeidea',
                 description: 'Tässä osiossa pureudutaan ytimeen: mitä yritys myy, kenelle ja miksi se on erityinen. Agentti auttaa kirkastamaan liikeidean peruspilarit.',
                 questions: [
-                    'Kuvaile yrityksesi tarjoamaa tuotetta tai palvelua lyhyesti.',
-                    'Mikä tekee tuotteestasi tai palvelustasi ainutlaatuisen?',
-                    'Kenelle tuotteesi tai palvelusi on suunnattu (kohderyhmä)?'
+                    { key: 'Tuote/palvelu', text: 'Kuvaile yrityksesi tarjoamaa tuotetta tai palvelua lyhyesti.' },
+                    { key: 'Ainutlaatuisuus', text: 'Mikä tekee tuotteestasi tai palvelustasi ainutlaatuisen?' },
+                    { key: 'Kohderyhmä', text: 'Kenelle tuotteesi tai palvelusi on suunnattu (kohderyhmä)?' }
                 ]
             },
             {
@@ -133,9 +116,9 @@
                 heading: 'Markkina-analyysi',
                 description: 'Yksikään yritys ei toimi tyhjiössä. Tässä vaiheessa agentti ohjaa yrittäjää analysoimaan kilpailukenttää ja tunnistamaan markkinan mahdollisuuksia ja trendejä.',
                 questions: [
-                    'Ketkä ovat tärkeimmät kilpailijasi?',
-                    'Miten yrityksesi eroaa kilpailijoista?',
-                    'Millaisia trendejä tai mahdollisuuksia markkinoilla on tällä hetkellä?'
+                    { key: 'Kilpailijat', text: 'Ketkä ovat tärkeimmät kilpailijasi?' },
+                    { key: 'Erottuvuustekijät', text: 'Miten yrityksesi eroaa kilpailijoista?' },
+                    { key: 'Markkinan mahdollisuudet', text: 'Millaisia trendejä tai mahdollisuuksia markkinoilla on tällä hetkellä?' }
                 ]
             },
             {
@@ -144,9 +127,9 @@
                 heading: 'Liiketoimintamalli',
                 description: 'Miten yritys tekee rahaa ja mitä sen pyörittämiseen vaaditaan? Agentti auttaa määrittelemään ansaintalogiikan, tarvittavat resurssit ja käytännön toimintatavat.',
                 questions: [
-                    'Miten aiot ansaita rahaa (esim. tuotemyynti, palvelumaksu, tilausmalli)?',
-                    'Millaisia keskeisiä resursseja ja kumppanuuksia tarvitset toiminnan pyörittämiseen?',
-                    'Miten tuotteen toimitus tai palvelun tuottaminen käytännössä tapahtuu?'
+                    { key: 'Ansaintalogiikka', text: 'Miten aiot ansaita rahaa (esim. tuotemyynti, palvelumaksu, tilausmalli)?' },
+                    { key: 'Resurssit ja kumppanit', text: 'Millaisia keskeisiä resursseja ja kumppanuuksia tarvitset toiminnan pyörittämiseen?' },
+                    { key: 'Toimitusprosessi', text: 'Miten tuotteen toimitus tai palvelun tuottaminen käytännössä tapahtuu?' }
                 ]
             },
             {
@@ -155,9 +138,9 @@
                 heading: 'Markkinointi ja myynti',
                 description: 'Loistava tuote ei myy itse itseään. Tässä osiossa agentti auttaa suunnittelemaan, miten potentiaaliset asiakkaat tavoitetaan ja miten heidät vakuutetaan.',
                 questions: [
-                    'Miten aiot tavoittaa ensimmäiset asiakkaasi?',
-                    'Mitkä markkinointikanavat ovat sinulle tärkeimpiä (esim. sosiaalinen media, verkkosivut, suosittelut)?',
-                    'Millaisen mielikuvan ja viestin haluat brändillesi luoda?'
+                    { key: 'Asiakashankinta', text: 'Miten aiot tavoittaa ensimmäiset asiakkaasi?' },
+                    { key: 'Markkinointikanavat', text: 'Mitkä markkinointikanavat ovat sinulle tärkeimpiä (esim. sosiaalinen media, verkkosivut, suosittelut)?' },
+                    { key: 'Brändi-ilme', text: 'Millaisen mielikuvan ja viestin haluat brändillesi luoda?' }
                 ]
             },
             {
@@ -166,9 +149,9 @@
                 heading: 'Taloussuunnitelma',
                 description: 'Raha on yritystoiminnan polttoainetta. Agentti ohjaa yrittäjää laatimaan alustavan arvion tarvittavasta pääomasta, kuluista ja tulotavoitteista.',
                 questions: [
-                    'Mitä arvioit tarvitsevasi alkupääomaa toiminnan käynnistämiseen?',
-                    'Mitkä ovat suurimmat kiinteät ja muuttuvat kulusi kuukausitasolla?',
-                    'Mikä on realistinen liikevaihtotavoitteesi ensimmäisen vuoden aikana?'
+                    { key: 'Alkupääoma', text: 'Mitä arvioit tarvitsevasi alkupääomaa toiminnan käynnistämiseen?' },
+                    { key: 'Kulut', text: 'Mitkä ovat suurimmat kiinteät ja muuttuvat kulusi kuukausitasolla?' },
+                    { key: 'Liikevaihtotavoite', text: 'Mikä on realistinen liikevaihtotavoitteesi ensimmäisen vuoden aikana?' }
                 ]
             },
             {
@@ -177,16 +160,72 @@
                 heading: 'Riskit ja varautuminen',
                 description: 'Hyvään suunnitteluun kuuluu myös varautuminen vastoinkäymisiin. Viimeisessä vaiheessa agentti auttaa tunnistamaan potentiaalisia riskejä ja miettimään keinoja niiden hallintaan.',
                 questions: [
-                    'Mitkä ovat kolme suurinta riskiä liiketoiminnallesi?',
-                    'Miten aiot hallita tai pienentää näitä riskejä?'
+                    { key: 'Suurimmat riskit', text: 'Mitkä ovat kolme suurinta riskiä liiketoiminnallesi?' },
+                    { key: 'Riskienhallinta', text: 'Miten aiot hallita tai pienentää näitä riskejä?' }
                 ]
             }
         ];
 
-        const userAnswers = {};
+        const userAnswers = {
+            "aloitus": {
+                "0": "Käsinpesuun ja yksityiskohtaiseen autonhoitoon keskittyvää autopesulaa.",
+                "1": "Jyväs-Shine Autonhoito"
+            },
+            "liikeidea": {
+                "0": "Tarjoamme premium-tason autojen käsinpesuja, sisäpuhdistuksia, vahauksia ja pinnoituksia. Palvelumme on suunnattu autoilijoille, jotka arvostavat laadukasta jälkeä ja henkilökohtaista palvelua.",
+                "1": "Käytämme ainoastaan laadukkaita, ympäristöystävällisiä pesuaineita. Ainutlaatuista on mobiilisovelluksemme, jolla voi varata ajan, seurata työn etenemistä ja maksaa vaivattomasti. Tarjoamme myös nouto- ja palautuspalvelun Jyväskylän alueella.",
+                "2": "Pääkohderyhmämme ovat uudehkojen autojen omistajat, yritysautoilijat sekä autoharrastajat Jyväskylän seudulla, jotka haluavat pitää autonsa arvossa ja moitteettomassa kunnossa."
+            },
+            "markkina-analyysi": {
+                "0": "Paikalliset automaattipesukadut (esim. ABC, Neste K) sekä muut pienemmät käsinpesulat ja fiksausliikkeet Jyväskylässä.",
+                "1": "Eroamme automaattipesuloista henkilökohtaisella palvelulla ja huomattavasti paremmalla pesutuloksella. Muista käsinpesuloista erotumme modernilla teknologialla (sovellus) ja asiakaskokemukseen panostamisella (noutopalvelu, siisti odotustila).",
+                "2": "Autojen sähköistyminen lisää tarvetta hellävaraisemmille pesumenetelmille. Ympäristötietoisuus kasvaa, mikä suosii ekologisten pesuaineiden käyttöä. Kiireiset ihmiset arvostavat aikaa säästäviä palveluita, kuten noutopalvelua."
+            },
+            "liiketoimintamalli": {
+                "0": "Ansainta perustuu yksittäisiin palvelumaksuihin (pesut, vahaukset). Lisäksi tarjoamme kuukausimaksullisia ylläpitosopimuksia yritysasiakkaille ja myymme pientä valikoimaa laadukkaita autonhoitotuotteita.",
+                "1": "Resurssit: Vuokrattu toimitila pesuhallilla, ammattitaitoiset työntekijät, laadukkaat pesu- ja hoitovälineet. Kumppanuudet: Yhteistyö paikallisten autoliikkeiden ja yritysten kanssa heidän autokantansa ylläpidossa.",
+                "2": "Asiakas varaa ajan sovelluksella tai puhelimitse. Auto tuodaan pesulaan tai käytetään noutopalvelua. Palvelu suoritetaan sovitusti, ja asiakas saa ilmoituksen, kun auto on valmis. Maksu tapahtuu sovelluksen kautta tai paikan päällä."
+            },
+            "markkinointi": {
+                "0": "Aluksi paikallisella markkinoinnilla: mainokset sosiaalisessa mediassa (Facebook, Instagram) kohdennettuna Jyväskylän alueelle, avajaistarjoukset ja yhteistyö paikallisten autoalan vaikuttajien kanssa.",
+                "1": "Tärkeimmät kanavat ovat visuaaliseen sisältöön panostava Instagram ('ennen ja jälkeen' -kuvat), hakukonenäkyvyys (Google Maps) ja tyytyväisten asiakkaiden suosittelut.",
+                "2": "Brändin viesti on 'Yksityiskohtaista huolenpitoa autollesi'. Haluamme luoda mielikuvan luotettavasta, laadukkaasta ja modernista premium-palvelusta, joka tekee auton omistamisesta vaivattomampaa."
+            },
+            "taloussuunnitelma": {
+                "0": "Noin 25 000 euroa. Tämä kattaa toimitilan ensimmäiset vuokrat ja takuut, pesulaitteiston (painepesuri, imuri), laadukkaat pesuaineet ja tarvikkeet, sekä markkinoinnin aloittamisen.",
+                "1": "Kiinteät kulut: toimitilan vuokra, työntekijöiden palkat, kirjanpito, sovelluksen ylläpitokulut. Muuttuvat kulut: pesu- ja hoitoaineet, vesi, sähkö, markkinointikulut.",
+                "2": "Ensimmäisen vuoden liikevaihtotavoite on 70 000 euroa. Tämä perustuu arvioon noin 10-15 autopesusta päivässä keskimääräisellä palveluhinnalla."
+            },
+            "riskit": {
+                "0": "1. Vähäinen asiakasmäärä alussa. 2. Kova kilpailu hintatasossa automaattipesuloiden kanssa. 3. Työntekijöiden saatavuus ja pysyvyys.",
+                "1": "1. Tehokkaalla ja kohdennetulla alkuvaiheen markkinoinnilla ja kanta-asiakasohjelmalla. 2. Korostamalla laatueroa ja tarjoamalla lisäarvopalveluita (nouto, sovellus). 3. Tarjoamalla kilpailukykyisen palkan ja hyvän työympäristön."
+            }
+        };
 
         const navigationEl = document.getElementById('navigation').querySelector('ul');
         const contentEl = document.getElementById('content');
+        const finalPlanEl = document.getElementById('final-plan-code');
+
+        function updateFinalPlan() {
+            let finalText = "";
+            const companyName = userAnswers['aloitus'] ? (userAnswers['aloitus']['1'] || '[Yrityksen nimeä ei ole määritetty]') : '[Yrityksen nimeä ei ole määritetty]';
+            finalText += `## Yrityksen nimi: ${companyName}\n\n`;
+
+            agentData.forEach(section => {
+                finalText += `## ${section.title}\n`;
+                section.questions.forEach((question, index) => {
+                    if (question.key === 'Yrityksen nimi') return; // Handled at the top
+                    
+                    const answer = userAnswers[section.id] ? (userAnswers[section.id][index] || '[Ei vastausta]') : '[Ei vastausta]';
+                    finalText += `**${question.key}:** ${answer}\n`;
+                });
+                finalText += '\n';
+            });
+            
+            if (finalPlanEl) {
+                finalPlanEl.textContent = finalText.trim();
+            }
+        }
 
         function renderContent(sectionId) {
             const sectionData = agentData.find(item => item.id === sectionId);
@@ -202,7 +241,7 @@
                     <div class="mb-6">
                         <label for="${sectionId}-${index}" class="block font-medium text-gray-800 mb-2 flex items-start">
                             <span class="mr-3 mt-1 text-lg text-[#D4A373]">➔</span>
-                            <span>${q}</span>
+                            <span>${q.text}</span>
                         </label>
                         <textarea id="${sectionId}-${index}"
                                   class="mt-1 w-full p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-[#E6CBA8] focus:border-[#D4A373] transition duration-150 ease-in-out h-28"
@@ -266,6 +305,9 @@
                     e.preventDefault();
                     const sectionId = e.target.id.replace('save-button-', '');
                     const feedbackEl = document.getElementById(`save-feedback-${sectionId}`);
+                    
+                    updateFinalPlan();
+
                     if (feedbackEl) {
                         feedbackEl.classList.remove('opacity-0');
                         setTimeout(() => {
@@ -276,6 +318,7 @@
             });
 
             renderContent(agentData[0].id);
+            updateFinalPlan();
             
             const style = document.createElement('style');
             style.innerHTML = `
@@ -294,5 +337,4 @@
     </script>
 </body>
 </html>
-
 
