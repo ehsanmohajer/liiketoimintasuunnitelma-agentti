@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktiivinen Liiketoimintasuunnitelma-Agentti</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: Sovellus on suunniteltu yksisivuiseksi, tehtäväorientoituneeksi työkaluksi. Rakenne perustuu kaksipalstaiseen asetteluun: vasemmalla on kiinteä navigointipalkki, joka toimii prosessin vaiheistuksena, ja oikealla on dynaaminen sisältöalue. Käyttäjä voi klikata vasemmanpuoleisesta valikosta haluamaansa vaihetta (esim. "Liikeidea"), jolloin kyseisen vaiheen kysymykset ja selitykset ilmestyvät oikealle. Tämä rakenne valittiin, koska se pilkkoo monivaiheisen prosessin helposti omaksuttaviin osiin ja antaa käyttäjälle selkeän kuvan kokonaisuudesta sekä vapauden tutkia osioita haluamassaan järjestyksessä. Se on staattista dokumenttia interaktiivisempi ja käyttäjäystävällisempi tapa hahmottaa agentin toimintalogiikka. -->
+    <!-- Visualization & Content Choices: Sovellus visualisoi agentin luomisprosessin ilman data-visualointeja, koska lähdemateriaali on ohjeistus. Vaiheet (Organize) -> Interaktiivinen pystysuuntainen navigointivalikko (HTML/CSS/JS) -> Klikkaus päivittää sisältönäkymän -> Perustelu: Selkeä ja intuitiivinen tapa esittää lineaarinen prosessi. Kysymykset (Inform) -> Muotoillut tekstilistat dynaamisessa sisältöalueessa (HTML/CSS) -> Perustelu: Suora ja selkeä tapa esittää agentin esittämät kysymykset. Lopputulos (Inform) -> Esimerkki muotoillusta Markdown-dokumentista (HTML pre-tag) -> Perustelu: Konkretisoi käyttäjälle, millaisen lopputuloksen agentti tuottaa. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #3D352E;
+        }
+        .nav-item {
+            transition: all 0.2s ease-in-out;
+            border-left: 4px solid transparent;
+        }
+        .nav-item.active {
+            background-color: #F4EFE7;
+            border-left-color: #D4A373;
+            color: #3D352E;
+            font-weight: 500;
+        }
+        .nav-item:hover {
+            background-color: #F8F5F0;
+            border-left-color: #E6CBA8;
+        }
+        .content-card {
+            background-color: #FFFFFF;
+            border: 1px solid #F0EAE2;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F8F5F0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #E6CBA8;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D4A373;
+        }
+        textarea {
+            resize: vertical;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="min-h-screen container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8 md:mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-[#3D352E]">Liiketoimintasuunnitelma-Agentin Rakenne</h1>
+            <p class="mt-2 text-lg text-gray-600 max-w-3xl mx-auto">Interaktiivinen työkalu tekoälyagentin toiminnan suunnitteluun ja visualisointiin.</p>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <aside class="lg:col-span-1">
+                <nav id="navigation" class="sticky top-8 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                    <h2 class="text-lg font-semibold mb-4 px-2">Prosessi vaiheittain</h2>
+                    <ul></ul>
+                </nav>
+            </aside>
+
+            <div id="content" class="lg:col-span-3">
+            </div>
+        </main>
+
+        <section id="final-output-section" class="mt-12 p-6 md:p-8 rounded-lg content-card">
+             <h2 class="text-2xl font-bold mb-4">Agentin tuottama lopputulos</h2>
+             <p class="mb-6 text-gray-600">Kun käyttäjä on vastannut kaikkiin kysymyksiin, tekoälyagentti koostaa vastauksista alla olevan kaltaisen, selkeästi jäsennellyn liiketoimintasuunnitelman. Tämä on esimerkki siitä, miltä valmis dokumentti voisi näyttää.</p>
+             <div class="bg-gray-50 p-6 rounded-md border border-gray-200 text-sm font-mono text-gray-800 overflow-x-auto">
+                 <pre><code>## Yrityksen nimi: [Käyttäjän vastaus]
+
+## 1. Liikeidea
+**Tuote/palvelu:** [Käyttäjän kuvaus tuotteesta/palvelusta]
+**Ainutlaatuisuus:** [Käyttäjän vastaus siitä, mikä tekee siitä uniikin]
+**Kohderyhmä:** [Käyttäjän kuvaus kohderyhmästä]
+
+## 2. Markkina-analyysi
+**Kilpailijat:** [Käyttäjän listaamat kilpailijat]
+**Erottuvuustekijät:** [Käyttäjän vastaus siitä, miten yritys eroaa kilpailijoista]
+**Markkinan mahdollisuudet:** [Käyttäjän kuvaus trendeistä ja mahdollisuuksista]
+
+## 3. Liiketoimintamalli
+**Ansaintalogiikka:** [Käyttäjän vastaus ansaintamallista]
+**Resurssit ja kumppanit:** [Käyttäjän kuvaus resursseista]
+**Toimitusprosessi:** [Käyttäjän kuvaus toimitusketjusta]
+
+... ja niin edelleen kaikille osa-alueille.</code></pre>
+             </div>
+        </section>
+
+        <footer class="text-center mt-12 py-6 border-t border-gray-200">
+            <p class="text-gray-500">Tämä interaktiivinen työkalu perustuu Elina T:n ideaan ja ChatGPT:n kanssa käytyyn keskusteluun.</p>
+        </footer>
+    </div>
+
+    <script>
+        const agentData = [
+            {
+                id: 'aloitus',
+                title: '1. Aloitus',
+                heading: 'Tervetuloa & Aloitus',
+                description: 'Ensimmäisessä vaiheessa agentti toivottaa käyttäjän tervetulleeksi, selittää prosessin lyhyesti ja kerää perustiedot aloitettavasta liiketoiminnasta. Tämä luo pohjan koko suunnitelmalle.',
+                questions: [
+                    'Minkä tyyppistä liiketoimintaa suunnittelet aloittavasi?',
+                    'Mikä on yrityksesi nimi (jos sinulla on jo nimi mielessä)?'
+                ]
+            },
+            {
+                id: 'liikeidea',
+                title: '2. Liikeidea',
+                heading: 'Liikeidea',
+                description: 'Tässä osiossa pureudutaan ytimeen: mitä yritys myy, kenelle ja miksi se on erityinen. Agentti auttaa kirkastamaan liikeidean peruspilarit.',
+                questions: [
+                    'Kuvaile yrityksesi tarjoamaa tuotetta tai palvelua lyhyesti.',
+                    'Mikä tekee tuotteestasi tai palvelustasi ainutlaatuisen?',
+                    'Kenelle tuotteesi tai palvelusi on suunnattu (kohderyhmä)?'
+                ]
+            },
+            {
+                id: 'markkina-analyysi',
+                title: '3. Markkina-analyysi',
+                heading: 'Markkina-analyysi',
+                description: 'Yksikään yritys ei toimi tyhjiössä. Tässä vaiheessa agentti ohjaa yrittäjää analysoimaan kilpailukenttää ja tunnistamaan markkinan mahdollisuuksia ja trendejä.',
+                questions: [
+                    'Ketkä ovat tärkeimmät kilpailijasi?',
+                    'Miten yrityksesi eroaa kilpailijoista?',
+                    'Millaisia trendejä tai mahdollisuuksia markkinoilla on tällä hetkellä?'
+                ]
+            },
+            {
+                id: 'liiketoimintamalli',
+                title: '4. Liiketoimintamalli',
+                heading: 'Liiketoimintamalli',
+                description: 'Miten yritys tekee rahaa ja mitä sen pyörittämiseen vaaditaan? Agentti auttaa määrittelemään ansaintalogiikan, tarvittavat resurssit ja käytännön toimintatavat.',
+                questions: [
+                    'Miten aiot ansaita rahaa (esim. tuotemyynti, palvelumaksu, tilausmalli)?',
+                    'Millaisia keskeisiä resursseja ja kumppanuuksia tarvitset toiminnan pyörittämiseen?',
+                    'Miten tuotteen toimitus tai palvelun tuottaminen käytännössä tapahtuu?'
+                ]
+            },
+            {
+                id: 'markkinointi',
+                title: '5. Markkinointi ja myynti',
+                heading: 'Markkinointi ja myynti',
+                description: 'Loistava tuote ei myy itse itseään. Tässä osiossa agentti auttaa suunnittelemaan, miten potentiaaliset asiakkaat tavoitetaan ja miten heidät vakuutetaan.',
+                questions: [
+                    'Miten aiot tavoittaa ensimmäiset asiakkaasi?',
+                    'Mitkä markkinointikanavat ovat sinulle tärkeimpiä (esim. sosiaalinen media, verkkosivut, suosittelut)?',
+                    'Millaisen mielikuvan ja viestin haluat brändillesi luoda?'
+                ]
+            },
+            {
+                id: 'taloussuunnitelma',
+                title: '6. Taloussuunnitelma',
+                heading: 'Taloussuunnitelma',
+                description: 'Raha on yritystoiminnan polttoainetta. Agentti ohjaa yrittäjää laatimaan alustavan arvion tarvittavasta pääomasta, kuluista ja tulotavoitteista.',
+                questions: [
+                    'Mitä arvioit tarvitsevasi alkupääomaa toiminnan käynnistämiseen?',
+                    'Mitkä ovat suurimmat kiinteät ja muuttuvat kulusi kuukausitasolla?',
+                    'Mikä on realistinen liikevaihtotavoitteesi ensimmäisen vuoden aikana?'
+                ]
+            },
+            {
+                id: 'riskit',
+                title: '7. Riskit ja varautuminen',
+                heading: 'Riskit ja varautuminen',
+                description: 'Hyvään suunnitteluun kuuluu myös varautuminen vastoinkäymisiin. Viimeisessä vaiheessa agentti auttaa tunnistamaan potentiaalisia riskejä ja miettimään keinoja niiden hallintaan.',
+                questions: [
+                    'Mitkä ovat kolme suurinta riskiä liiketoiminnallesi?',
+                    'Miten aiot hallita tai pienentää näitä riskejä?'
+                ]
+            }
+        ];
+
+        const userAnswers = {};
+
+        const navigationEl = document.getElementById('navigation').querySelector('ul');
+        const contentEl = document.getElementById('content');
+
+        function renderContent(sectionId) {
+            const sectionData = agentData.find(item => item.id === sectionId);
+            if (!sectionData) return;
+
+            if (!userAnswers[sectionId]) {
+                userAnswers[sectionId] = {};
+            }
+
+            const questionsHtml = sectionData.questions.map((q, index) => {
+                const savedAnswer = userAnswers[sectionId][index] || '';
+                return `
+                    <div class="mb-6">
+                        <label for="${sectionId}-${index}" class="block font-medium text-gray-800 mb-2 flex items-start">
+                            <span class="mr-3 mt-1 text-lg text-[#D4A373]">➔</span>
+                            <span>${q}</span>
+                        </label>
+                        <textarea id="${sectionId}-${index}"
+                                  class="mt-1 w-full p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-[#E6CBA8] focus:border-[#D4A373] transition duration-150 ease-in-out h-28"
+                                  placeholder="Kirjoita vastauksesi tähän...">${savedAnswer}</textarea>
+                    </div>
+                `;
+            }).join('');
+
+            contentEl.innerHTML = `
+                <div class="p-6 md:p-8 rounded-lg content-card animate-fade-in">
+                    <h2 class="text-2xl font-bold mb-2">${sectionData.heading}</h2>
+                    <p class="text-gray-600 mb-8">${sectionData.description}</p>
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold border-b pb-2 mb-6">Vastaa kysymyksiin:</h3>
+                        ${questionsHtml}
+                        <div class="mt-8 pt-6 border-t border-gray-200 text-right flex items-center justify-end">
+                            <span id="save-feedback-${sectionId}" class="mr-4 text-green-600 font-medium opacity-0 transition-opacity duration-300">Tiedot tallennettu! ✔</span>
+                            <button id="save-button-${sectionId}" class="bg-[#D4A373] text-white font-bold py-2 px-6 rounded-lg hover:bg-[#c8935a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#D4A373] transition duration-200">
+                                Tallenna vastaukset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.id === sectionId) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        function init() {
+            agentData.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="#" class="nav-item block w-full text-left px-4 py-3 rounded-md" data-id="${item.id}">${item.title}</a>`;
+                navigationEl.appendChild(li);
+            });
+
+            navigationEl.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = e.target.closest('.nav-item');
+                if (target && target.dataset.id) {
+                    renderContent(target.dataset.id);
+                }
+            });
+            
+            contentEl.addEventListener('input', (e) => {
+                if (e.target.tagName === 'TEXTAREA') {
+                    const [sectionId, questionIndex] = e.target.id.split('-');
+                    if (!userAnswers[sectionId]) {
+                        userAnswers[sectionId] = {};
+                    }
+                    userAnswers[sectionId][questionIndex] = e.target.value;
+                }
+            });
+
+            contentEl.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON' && e.target.id.startsWith('save-button-')) {
+                    e.preventDefault();
+                    const sectionId = e.target.id.replace('save-button-', '');
+                    const feedbackEl = document.getElementById(`save-feedback-${sectionId}`);
+                    if (feedbackEl) {
+                        feedbackEl.classList.remove('opacity-0');
+                        setTimeout(() => {
+                            feedbackEl.classList.add('opacity-0');
+                        }, 2500);
+                    }
+                }
+            });
+
+            renderContent(agentData[0].id);
+            
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes animate-fade-in {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .animate-fade-in {
+                    animation: animate-fade-in 0.5s ease-out forwards;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
+
