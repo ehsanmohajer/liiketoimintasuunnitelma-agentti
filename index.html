@@ -70,7 +70,9 @@
                 </nav>
             </aside>
 
-            <div id="content" class="lg:col-span-3">
+            <div id="main-content-area" class="lg:col-span-3">
+                <div id="content"></div>
+                <div id="save-area" class="mt-6 text-right flex items-center justify-end"></div>
             </div>
         </main>
 
@@ -83,7 +85,7 @@
         </section>
 
         <footer class="text-center mt-12 py-6 border-t border-gray-200">
-            <p class="text-gray-500">Made with Witas AI Agent.</p>
+            <p class="text-gray-500">Made by Witas AI Agent.</p>
         </footer>
     </div>
 
@@ -170,6 +172,8 @@
 
         const navigationEl = document.getElementById('navigation').querySelector('ul');
         const contentEl = document.getElementById('content');
+        const mainContentAreaEl = document.getElementById('main-content-area');
+        const saveAreaEl = document.getElementById('save-area');
         const finalPlanEl = document.getElementById('final-plan-code');
 
         function updateFinalPlan() {
@@ -223,14 +227,15 @@
                     <div class="space-y-4">
                         <h3 class="text-lg font-semibold border-b pb-2 mb-6">Vastaa kysymyksiin:</h3>
                         ${questionsHtml}
-                        <div class="mt-8 pt-6 border-t border-gray-200 text-right flex items-center justify-end">
-                            <span id="save-feedback-${sectionId}" class="mr-4 text-green-600 font-medium opacity-0 transition-opacity duration-300">Tiedot tallennettu! ✔</span>
-                            <button id="save-button-${sectionId}" class="bg-[#D4A373] text-white font-bold py-2 px-6 rounded-lg hover:bg-[#c8935a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#D4A373] transition duration-200">
-                                Tallenna vastaukset
-                            </button>
-                        </div>
                     </div>
                 </div>
+            `;
+            
+            saveAreaEl.innerHTML = `
+                <span id="save-feedback-${sectionId}" class="mr-4 text-green-600 font-medium opacity-0 transition-opacity duration-300">Tiedot tallennettu! ✔</span>
+                <button id="save-button-${sectionId}" class="bg-[#D4A373] text-white font-bold py-2 px-6 rounded-lg hover:bg-[#c8935a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#D4A373] transition duration-200">
+                    Tallenna vastaukset
+                </button>
             `;
 
             document.querySelectorAll('.nav-item').forEach(item => {
@@ -256,9 +261,12 @@
                 }
             });
             
-            contentEl.addEventListener('input', (e) => {
+            mainContentAreaEl.addEventListener('input', (e) => {
                 if (e.target.tagName === 'TEXTAREA') {
-                    const [sectionId, questionIndex] = e.target.id.split('-');
+                    const idParts = e.target.id.split('-');
+                    const questionIndex = idParts.pop();
+                    const sectionId = idParts.join('-');
+
                     if (!userAnswers[sectionId]) {
                         userAnswers[sectionId] = {};
                     }
@@ -266,7 +274,7 @@
                 }
             });
 
-            contentEl.addEventListener('click', (e) => {
+            mainContentAreaEl.addEventListener('click', (e) => {
                 if (e.target.tagName === 'BUTTON' && e.target.id.startsWith('save-button-')) {
                     e.preventDefault();
                     const sectionId = e.target.id.replace('save-button-', '');
